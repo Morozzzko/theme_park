@@ -1,0 +1,7 @@
+AllCops:
+  TargetRubyVersion: 2.7
+  Include:
+    - lib
+
+Style/Documentation:
+  Enabled: false
