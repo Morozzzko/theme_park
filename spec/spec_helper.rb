@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-require 'pry'
+begin
+  require 'pry'
+rescue LoadError # rubocop:disable Lint/HandleExceptions
+end
 
 require 'simplecov'
 SimpleCov.start
