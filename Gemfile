@@ -16,3 +16,6 @@ group :test do
   gem 'rspec'
   gem 'simplecov', require: false
 end
+
+gem 'dry-struct'
+gem 'dry-types'
