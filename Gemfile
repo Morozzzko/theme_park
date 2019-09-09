@@ -17,5 +17,6 @@ group :test do
   gem 'simplecov', require: false
 end
 
+gem 'dry-initializer'
 gem 'dry-struct'
 gem 'dry-types'
