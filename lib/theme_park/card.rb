@@ -5,24 +5,32 @@ require 'types'
 module ThemePark
   Suit = Types::String.enum('clubs', 'spades', 'hearts', 'diamonds')
 
-  class Number < Dry::Struct
+  class PlayableCard < Dry::Struct
+    Suit.values.each do |possible_suit|
+      define_method "#{possible_suit}?" do
+        suit == possible_suit
+      end
+    end
+  end
+
+  class Number < PlayableCard
     attribute :rank, Types::Integer.enum(*2..10)
     attribute :suit, Suit
   end
 
-  class Jack < Dry::Struct
+  class Jack < PlayableCard
     attribute :suit, Suit
   end
 
-  class Queen < Dry::Struct
+  class Queen < PlayableCard
     attribute :suit, Suit
   end
 
-  class King < Dry::Struct
+  class King < PlayableCard
     attribute :suit, Suit
   end
 
-  class Ace < Dry::Struct
+  class Ace < PlayableCard
     attribute :suit, Suit
   end
 
