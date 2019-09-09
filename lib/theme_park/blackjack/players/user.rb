@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-require 'theme_park/blackjack/game'
-
 module ThemePark
   module Blackjack
+    module Players
+      class User < Player
+      end
+    end
   end
 end
