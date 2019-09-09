@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'theme_park/deck'
 
 RSpec.describe ThemePark::Deck do
-  describe "#create" do
+  describe '#create' do
     subject { ThemePark::Deck.create }
 
     specify do

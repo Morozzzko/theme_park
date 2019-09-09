@@ -23,7 +23,7 @@ module ThemePark
               King[suit: suit],
               Queen[suit: suit],
               Jack[suit: suit],
-              *(2..10).map { Number[suit: suit, rank: @1] }
+              *(2..10).map { |rank| Number[suit: suit, rank: rank] }
             ]
           end
         ].shuffle
