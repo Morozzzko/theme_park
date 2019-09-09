@@ -13,3 +13,6 @@ Metrics/MethodLength:
   CountComments: false
   Max: 20
 
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
