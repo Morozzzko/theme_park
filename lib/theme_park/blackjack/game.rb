@@ -12,7 +12,8 @@ module ThemePark
 
       option :ai_player_count, Types::Integer.constrained(included_in: 4..6)
       option :deck, Deck, default: -> { Deck.create }
-      option :players, default: -> { generate_players }
+      option :players, default: -> { generate_players! }
+      option :dealer, default: -> { generate_dealer! }
 
       option :turn_count, Types::Integer, default: -> { 0 }
 
@@ -26,16 +27,17 @@ module ThemePark
         @turn_count += 1
       end
 
-      def generate_players
-        dealer = Players::Dealer.new(hand: select_cards!(2))
+      def generate_dealer!
+        @dealer = Players::Dealer.new(hand: select_cards!(2))
+      end
+
+      def generate_players!
         user = Players::User.new(hand: select_cards!(2))
         ai_players = Array.new(ai_player_count) do
           Players::AI.new(hand: select_cards!(2))
         end
 
-        shuffled_players = [user, *ai_players].shuffle
-
-        [dealer] + shuffled_players
+        [user, *ai_players].shuffle
       end
 
       def select_cards!(count)
