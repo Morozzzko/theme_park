@@ -4,16 +4,18 @@ require 'theme_park/deck'
 
 RSpec.describe ThemePark::Deck do
   describe '#create' do
-    subject { ThemePark::Deck.create }
+    subject(:deck) { described_class.create }
 
-    specify do
-      expect(subject).to be_an Array
-      expect(subject.length).to eql 52
+    it 'creates an array of 52 cards' do
+      expect(deck).to be_an Array
+      expect(deck.length).to be 52
+    end
 
-      expect(subject.count(&:spades?)).to eql(13)
-      expect(subject.count(&:clubs?)).to eql(13)
-      expect(subject.count(&:hearts?)).to eql(13)
-      expect(subject.count(&:diamonds?)).to eql(13)
+    it 'evenly distributes all 4 suits' do
+      expect(deck.count(&:spades?)).to be(13)
+      expect(deck.count(&:clubs?)).to be(13)
+      expect(deck.count(&:hearts?)).to be(13)
+      expect(deck.count(&:diamonds?)).to be(13)
     end
   end
 end
