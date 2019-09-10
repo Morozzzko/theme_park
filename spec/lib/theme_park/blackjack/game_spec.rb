@@ -28,4 +28,16 @@ RSpec.describe ThemePark::Blackjack::Game do
       expect(game.deck.size).to eql(52 - player_count * 2)
     end
   end
+
+  describe '#proceed' do
+    subject(:proceed) do
+      game.proceed
+    end
+
+    let(:game) { described_class.new(ai_player_count: ai_player_count) }
+
+    it 'increases turn count by 1' do
+      expect { proceed }.to change(game, :turn_count).from(0).to(1)
+    end
+  end
 end

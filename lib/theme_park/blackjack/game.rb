@@ -14,7 +14,17 @@ module ThemePark
       option :deck, Deck, default: -> { Deck.create }
       option :players, default: -> { generate_players }
 
+      option :turn_count, Types::Integer, default: -> { 0 }
+
+      def proceed
+        turn_finished!
+      end
+
       private
+
+      def turn_finished!
+        @turn_count += 1
+      end
 
       def generate_players
         dealer = Players::Dealer.new(hand: select_cards!(2))
