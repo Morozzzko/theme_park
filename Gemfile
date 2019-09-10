@@ -8,6 +8,7 @@ group :tools do
   gem 'pry-byebug'
   gem 'rubocop'
   gem 'rubocop-daemon'
+  gem 'rubocop-rspec'
   gem 'solargraph'
   gem 'travis'
 end
