@@ -14,10 +14,6 @@ module ThemePark
       option :deck, Deck, default: -> { Deck.create }
       option :players, default: -> { generate_players }
 
-      def initialize(**params)
-        super
-      end
-
       private
 
       def generate_players
