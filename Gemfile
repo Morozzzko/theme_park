@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 group :tools do
+  gem 'parser', github: 'iliabylich/parser', ref: 'pattern-matching'
   gem 'pry-byebug'
   gem 'rubocop'
   gem 'rubocop-daemon'
