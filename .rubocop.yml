@@ -7,7 +7,7 @@ Style/Documentation:
   Enabled: false
 
 Metrics/MethodLength:
-  Enabled: True
+  Enabled: true
   CountComments: false
   Max: 20
 
@@ -21,3 +21,6 @@ RSpec/MultipleExpectations:
 RSpec/ExampleLength:
   Enabled: true
   Max: 15
+
+Metrics/BlockLength:
+  Enabled: false
