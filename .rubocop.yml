@@ -1,9 +1,5 @@
 AllCops:
   TargetRubyVersion: 2.7
-  Include:
-    - lib/**/*.rb
-    - Gemfile
-    - spec/**/*.rb
 
 Style/Documentation:
   Enabled: false
