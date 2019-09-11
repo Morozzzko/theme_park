@@ -18,10 +18,29 @@ module ThemePark
       option :turn_count, Types::Integer, default: -> { 0 }
 
       def proceed
+        @players = players.map do |player|
+          handle_decision!(player.make_decision(dealer.hand))
+        end
+
         turn_finished!
       end
 
       private
+
+      def handle_decision!(decision)
+        case decision
+        in :hit
+          {}
+        in :stand
+          {}
+        in :double_down
+          {}
+        in :split
+          {}
+        in :surrender
+          {}
+        end
+      end
 
       def turn_finished!
         @turn_count += 1
