@@ -10,15 +10,22 @@ module ThemePark
     class Game
       extend Dry::Initializer
 
-      option :ai_player_count, Types::Integer.constrained(included_in: 4..6)
+      option :ai_player_count, Types::Integer.constrained(included_in: 4..6), default: -> { 4 }
       option :deck, Deck, default: -> { Deck.create }
-      option :players, default: -> { generate_players! }
+      option :player, Players::Player, default: -> { Players::User.new(hand: []) }
       option :dealer, default: -> { generate_dealer! }
+      option :players, default: -> { generate_players! }
       option :state,
              Types::Symbol.enum(:players_betting, :dealer_betting, :finished),
              default: -> { :players_betting }
 
       option :turn_count, Types::Integer, default: -> { 0 }
+
+      def initialize(*)
+        super
+
+        distribute_deck!
+      end
 
       def proceed
         case state
@@ -62,12 +69,18 @@ module ThemePark
       end
 
       def generate_players!
-        user = Players::User.new(hand: select_cards!(2))
+        user = player.new(hand: [])
         ai_players = Array.new(ai_player_count) do
-          Players::AI.new(hand: select_cards!(2))
+          Players::AI.new(hand: [])
         end
 
         [user, *ai_players].shuffle
+      end
+
+      def distribute_deck!
+        @players = players.map do |player|
+          player.new(hand: select_cards!(2))
+        end
       end
 
       def select_cards!(count)
