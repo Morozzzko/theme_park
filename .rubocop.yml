@@ -20,6 +20,10 @@ RSpec/MultipleExpectations:
   Enabled: true
   Max: 5
 
+RSpec/NestedGroup:
+  Enabled: true
+  Max: 4
+
 RSpec/ExampleLength:
   Enabled: true
   Max: 15
