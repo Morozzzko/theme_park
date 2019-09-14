@@ -8,9 +8,10 @@ RSpec.describe ThemePark::Blackjack::Game do
   end
 
   let(:ai_player_count) { 5 }
-  let(:player_count) { ai_player_count + 1 }
 
   describe 'initializing a game' do
+    let(:player_count) { ai_player_count + 1 }
+
     it 'generates N AI players + user + dealer from AI player count' do
       expect(game.players.count).to eql(player_count)
     end
@@ -43,15 +44,48 @@ RSpec.describe ThemePark::Blackjack::Game do
     end
 
     it 'iteratres over each player and asks them to decide' do
-      game.players.each do |player|
+      players = game.players
+
+      players.each do |player|
         allow(player).to receive(:make_decision).and_return(:hit)
       end
 
       proceed
 
-      expect(game.players).to all(
+      expect(players).to all(
         have_received(:make_decision).with(game.dealer.hand)
       )
+    end
+
+    describe 'player decisions' do
+      subject(:game) do
+        described_class.new(player: player, players: [player])
+      end
+
+      let(:player) do
+        ThemePark::Blackjack::Players::User.new(
+          hand: [],
+          decision_handler: make_decision
+        )
+      end
+
+      describe ':hit' do
+        let(:make_decision) do
+          lambda { |_player_hand, _dealer_hand|
+            :hit
+          }
+        end
+
+        it 'removes a card from the deck and adds it to the player hand' do
+          expect do
+            proceed
+          end.to change {
+            game.deck.size
+          }.from(48).to(47).and change {
+            game.players.first.hand.size
+          }.from(2).to(3)
+        end
+      end
     end
   end
 end

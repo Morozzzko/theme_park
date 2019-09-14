@@ -15,9 +15,15 @@ module ThemePark
                      :surrendered,
                      :bust
                    )
+        attribute? :decision_handler,
+                   Types::Any
 
-        def make_decision(_)
-          :surrender
+        def make_decision(dealer_hand)
+          if attributes.include?(:decision_handler)
+            decision_handler.call(hand, dealer_hand)
+          else
+            :surrender
+          end
         end
       end
     end

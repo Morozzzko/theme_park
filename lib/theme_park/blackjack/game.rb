@@ -48,7 +48,7 @@ module ThemePark
         # everything is no-op right now
         case decision
         in :hit
-          player
+          player.new(hand: player.hand + select_cards!(1))
         in :stand
           player
         in :double_down
