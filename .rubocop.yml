@@ -22,7 +22,7 @@ RSpec/MultipleExpectations:
 
 RSpec/NestedGroup:
   Enabled: true
-  Max: 4
+  Max: 5
 
 RSpec/ExampleLength:
   Enabled: true
