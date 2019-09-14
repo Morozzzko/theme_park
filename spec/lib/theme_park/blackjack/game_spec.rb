@@ -41,5 +41,17 @@ RSpec.describe ThemePark::Blackjack::Game do
     it 'increases turn count by 1' do
       expect { proceed }.to change(game, :turn_count).from(0).to(1)
     end
+
+    it 'iteratres over each player and asks them to decide' do
+      game.players.each do |player|
+        allow(player).to receive(:make_decision).and_return(:hit)
+      end
+
+      proceed
+
+      expect(game.players).to all(
+        have_received(:make_decision).with(game.dealer.hand)
+      )
+    end
   end
 end

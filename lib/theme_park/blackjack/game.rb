@@ -21,27 +21,35 @@ module ThemePark
       option :turn_count, Types::Integer, default: -> { 0 }
 
       def proceed
-        @players = players.map do |player|
-          handle_decision!(player.make_decision(dealer.hand))
+        case state
+        in :players_betting
+          @players = players.map do |player|
+            handle_decision!(player, player.make_decision(dealer.hand))
+          end
+          turn_finished!
+        in :dealer_betting
+          # TODO: implement
+          nil
+        in :finished
+          # nothing to do here
         end
-
-        turn_finished!
       end
 
       private
 
-      def handle_decision!(decision)
+      def handle_decision!(player, decision)
+        # everything is no-op right now
         case decision
         in :hit
-          {}
+          player
         in :stand
-          {}
+          player
         in :double_down
-          {}
+          player
         in :split
-          {}
+          player
         in :surrender
-          {}
+          player
         end
       end
 
