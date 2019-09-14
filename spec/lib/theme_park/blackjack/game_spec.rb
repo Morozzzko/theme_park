@@ -25,6 +25,10 @@ RSpec.describe ThemePark::Blackjack::Game do
       ).to eql(player_count * 2)
       expect(game.deck.size).to eql(52 - player_count * 2 - 2)
     end
+
+    it 'starts in the :players_betting state' do
+      expect(game.state).to be(:players_betting)
+    end
   end
 
   describe '#proceed' do

@@ -14,6 +14,9 @@ module ThemePark
       option :deck, Deck, default: -> { Deck.create }
       option :players, default: -> { generate_players! }
       option :dealer, default: -> { generate_dealer! }
+      option :state,
+             Types::Symbol.enum(:players_betting, :dealer_betting, :finished),
+             default: -> { :players_betting }
 
       option :turn_count, Types::Integer, default: -> { 0 }
 
