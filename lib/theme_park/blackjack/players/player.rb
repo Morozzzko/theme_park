@@ -28,7 +28,7 @@ module ThemePark
           if attributes.include?(:decision_handler)
             decision_handler.call(hand, dealer_hand)
           else
-            :surrender
+            :hit
           end
         end
 
