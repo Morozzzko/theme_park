@@ -27,7 +27,11 @@ module ThemePark
         end
 
         def sum
-          hand.reduce(0, &:value)
+          hand.map(&:value).sum
+        end
+
+        def blackjack?
+          sum == 21 && hand.size == 2
         end
 
         def bust?
