@@ -85,6 +85,36 @@ RSpec.describe ThemePark::Blackjack::Game do
             game.players.first.hand.size
           }.from(2).to(3)
         end
+
+        context 'about to bust' do
+          subject(:game) do
+            described_class.new(player: player, players: [player], deck: deck)
+          end
+
+          let(:deck) do
+            ThemePark::Deck[
+              [
+                ThemePark::Jack[suit: 'spades'],
+                ThemePark::Jack[suit: 'hearts'],
+                ThemePark::Jack[suit: 'clubs'],
+                ThemePark::Jack[suit: 'diamonds'],
+                ThemePark::Queen[suit: 'spades'],
+                ThemePark::Queen[suit: 'hearts'],
+                ThemePark::Queen[suit: 'clubs'],
+                ThemePark::Queen[suit: 'diamonds']
+
+              ]
+            ]
+          end
+
+          specify do
+            expect do
+              proceed
+            end.to change {
+              game.players.first.state
+            }.from(:playing).to(:bust)
+          end
+        end
       end
     end
   end
