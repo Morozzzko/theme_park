@@ -44,7 +44,7 @@ module ThemePark
         in :hit
           player.take_cards(select_cards!(1))
         in :surrender
-          player
+          player.surrender
         end
       end
 

@@ -106,4 +106,14 @@ RSpec.describe ThemePark::Blackjack::Players::Player do
       end
     end
   end
+
+  describe '#surrender' do
+    subject(:surrender) { player.surrender }
+
+    specify do
+      expect(surrender).to be_a(described_class)
+      expect(surrender).not_to be(player)
+      expect(surrender.state).to be(:surrendered)
+    end
+  end
 end
