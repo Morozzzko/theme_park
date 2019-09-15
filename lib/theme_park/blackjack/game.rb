@@ -45,6 +45,8 @@ module ThemePark
           player.take_cards(select_cards!(1))
         in :surrender
           player.surrender
+        in :stand
+          player.stand
         end
       end
 
@@ -53,6 +55,8 @@ module ThemePark
 
         if everyone_failed?
           finish!
+        elsif everyone_waiting?
+          play_dealer!
         end
       end
 
@@ -60,6 +64,14 @@ module ThemePark
         # TODO: move logic somewhere else
 
         players.none? { |player| %i[playing standing].include?(player.state) }
+      end
+
+      def everyone_waiting?
+        players.none? { |player| player.state == 'playing' } && !everyone_failed?
+      end
+
+      def play_dealer!
+        @state = :dealer_betting
       end
 
       def finish!
