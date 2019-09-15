@@ -86,7 +86,7 @@ RSpec.describe ThemePark::Blackjack::Game do
           }.from(2).to(3)
         end
 
-        context 'about to bust' do
+        context 'the only player is about to bust' do
           subject(:game) do
             described_class.new(player: player, players: [player], deck: deck)
           end
@@ -102,7 +102,6 @@ RSpec.describe ThemePark::Blackjack::Game do
                 ThemePark::Queen[suit: 'hearts'],
                 ThemePark::Queen[suit: 'clubs'],
                 ThemePark::Queen[suit: 'diamonds']
-
               ]
             ]
           end
@@ -112,7 +111,7 @@ RSpec.describe ThemePark::Blackjack::Game do
               proceed
             end.to change {
               game.players.first.state
-            }.from(:playing).to(:bust)
+            }.from(:playing).to(:bust).and change(game, :state).from(:players_betting).to(:finished)
           end
         end
       end

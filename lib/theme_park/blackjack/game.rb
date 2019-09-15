@@ -62,6 +62,30 @@ module ThemePark
 
       def turn_finished!
         @turn_count += 1
+
+        if everyone_failed?
+          finish!
+        elsif everyone_done?
+          dealer_plays!
+        end
+      end
+
+      def everyone_failed?
+        # TODO: move logic somewhere else
+        players.none? { |player| %i[playing standing].include?(player.state) }
+      end
+
+      def everyone_done?
+        # TODO: move logic somewhere else
+        players.all? { |player| %i[bust surrendered].include?(player.state) }
+      end
+
+      def finish!
+        @state = :finished
+      end
+
+      def dealer_plays!
+        @state = :dealer_betting
       end
 
       def generate_dealer!
