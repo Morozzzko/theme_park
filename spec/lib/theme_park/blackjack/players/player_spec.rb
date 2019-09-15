@@ -104,12 +104,6 @@ RSpec.describe ThemePark::Blackjack::Players::Player do
           expect(sum).to be(21)
         end
       end
-
-      context 'multiple ace' do
-      end
-
-      context 'bust' do
-      end
     end
   end
 end

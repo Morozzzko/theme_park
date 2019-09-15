@@ -34,11 +34,6 @@ module ThemePark
             handle_decision!(player, player.make_decision(dealer.hand))
           end
           turn_finished!
-        in :dealer_betting
-          # TODO: implement
-          nil
-        in :finished
-          # nothing to do here
         end
       end
 
@@ -49,14 +44,6 @@ module ThemePark
         case decision
         in :hit
           player.take_cards(select_cards!(1))
-        in :stand
-          player
-        in :double_down
-          player
-        in :split
-          player
-        in :surrender
-          player
         end
       end
 
@@ -65,8 +52,6 @@ module ThemePark
 
         if everyone_failed?
           finish!
-        elsif everyone_done?
-          dealer_plays!
         end
       end
 
@@ -75,17 +60,8 @@ module ThemePark
         players.none? { |player| %i[playing standing].include?(player.state) }
       end
 
-      def everyone_done?
-        # TODO: move logic somewhere else
-        players.all? { |player| %i[bust surrendered].include?(player.state) }
-      end
-
       def finish!
         @state = :finished
-      end
-
-      def dealer_plays!
-        @state = :dealer_betting
       end
 
       def generate_dealer!
