@@ -40,10 +40,11 @@ module ThemePark
       private
 
       def handle_decision!(player, decision)
-        # everything is no-op right now
         case decision
         in :hit
           player.take_cards(select_cards!(1))
+        in :surrender
+          player
         end
       end
 
