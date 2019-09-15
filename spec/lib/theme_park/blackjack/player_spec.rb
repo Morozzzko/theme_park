@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'theme_park/deck'
-require 'theme_park/blackjack/players/player'
+require 'theme_park/blackjack/player'
 
-RSpec.describe ThemePark::Blackjack::Players::Player do
+RSpec.describe ThemePark::Blackjack::Player do
   subject(:player) do
     described_class.new(hand: hand)
   end
