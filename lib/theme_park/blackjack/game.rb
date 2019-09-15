@@ -10,22 +10,78 @@ module ThemePark
     class Game
       extend Dry::Initializer
 
-      option :ai_player_count, Types::Integer.constrained(included_in: 4..6)
+      option :ai_player_count, Types::Integer.constrained(included_in: 4..6), default: -> { 4 }
       option :deck, Deck, default: -> { Deck.create }
-      option :players, default: -> { generate_players }
+      option :player, Players::Player, default: -> { Players::User.new(hand: []) }
+      option :dealer, default: -> { generate_dealer! }
+      option :players, default: -> { generate_players! }
+      option :state,
+             Types::Symbol.enum(:players_betting, :dealer_betting, :finished),
+             default: -> { :players_betting }
+
+      option :turn_count, Types::Integer, default: -> { 0 }
+
+      def initialize(*)
+        super
+
+        distribute_deck!
+      end
+
+      def proceed
+        case state
+        in :players_betting
+          @players = players.map do |player|
+            handle_decision!(player, player.make_decision(dealer.hand))
+          end
+          turn_finished!
+        end
+      end
 
       private
 
-      def generate_players
-        dealer = Players::Dealer.new(hand: select_cards!(2))
-        user = Players::User.new(hand: select_cards!(2))
+      def handle_decision!(player, decision)
+        case decision
+        in :hit
+          player.take_cards(select_cards!(1))
+        in :surrender
+          player
+        end
+      end
+
+      def turn_finished!
+        @turn_count += 1
+
+        if everyone_failed?
+          finish!
+        end
+      end
+
+      def everyone_failed?
+        # TODO: move logic somewhere else
+        players.none? { |player| %i[playing standing].include?(player.state) }
+      end
+
+      def finish!
+        @state = :finished
+      end
+
+      def generate_dealer!
+        @dealer = Players::Dealer.new(hand: select_cards!(2))
+      end
+
+      def generate_players!
+        user = player.new(hand: [])
         ai_players = Array.new(ai_player_count) do
-          Players::AI.new(hand: select_cards!(2))
+          Players::AI.new(hand: [])
         end
 
-        shuffled_players = [user, *ai_players].shuffle
+        [user, *ai_players].shuffle
+      end
 
-        [dealer] + shuffled_players
+      def distribute_deck!
+        @players = players.map do |player|
+          player.take_cards(select_cards!(2))
+        end
       end
 
       def select_cards!(count)
