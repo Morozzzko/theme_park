@@ -132,39 +132,21 @@ RSpec.describe ThemePark::Blackjack::Game do
         it 'finishes game when there is only one player' do
           expect { proceed }.to change(game, :state).from(:players_betting).to(:finished)
         end
+      end
 
-        context 'some players are still in the game' do
-          subject(:game) do
-            described_class.new(player: player, players: players, deck: deck)
-          end
+      describe '#stand' do
+        let(:make_decision) do
+          lambda { |_player_hand, _dealer_hand|
+            :stand
+          }
+        end
 
-          let(:players) do
-            [
-              player,
-              ThemePark::Blackjack::Players::Player[
-                hand: []
-              ]
-            ]
-          end
+        it 'does not change deck size' do
+          expect { proceed }.not_to change { game.deck.size }
+        end
 
-          let(:deck) do
-            ThemePark::Deck[
-              [
-                ThemePark::Number[rank: 2, suit: 'spades'],
-                ThemePark::Number[rank: 2, suit: 'hearts'],
-                ThemePark::Number[rank: 2, suit: 'diamonds'],
-                ThemePark::Number[rank: 2, suit: 'clubs'],
-                ThemePark::Number[rank: 3, suit: 'spades'],
-                ThemePark::Number[rank: 3, suit: 'hearts'],
-                ThemePark::Number[rank: 3, suit: 'diamonds'],
-                ThemePark::Number[rank: 3, suit: 'clubs']
-              ]
-            ]
-          end
-
-          specify do
-            expect { proceed }.not_to change(game, :state).from(:players_betting)
-          end
+        it 'moves the game to dealer when there is only one player' do
+          expect { proceed }.to change(game, :state).from(:players_betting).to(:dealer_betting)
         end
       end
     end
