@@ -8,7 +8,7 @@ end
 require 'simplecov'
 SimpleCov.start
 
-Dir[File.join(__dir__, 'shared/**/*')].each(&method(:require))
+Dir[File.join(__dir__, 'support/shared/**/*')].each(&method(:require))
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
