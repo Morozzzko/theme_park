@@ -97,4 +97,28 @@ RSpec.shared_examples 'blackjack player' do
       end
     end
   end
+
+  describe 'take_cards' do
+    subject(:take_cards) { player.take_cards(cards) }
+
+    let(:cards) do
+      [
+        ThemePark::King[suit: 'spades'],
+        ThemePark::Queen[suit: 'spades'],
+        ThemePark::Jack[suit: 'spades']
+      ]
+    end
+
+    specify do
+      expect(take_cards).to be_a(described_class)
+      expect(take_cards).not_to be(player)
+      expect(take_cards.hand).to eql(player.hand + cards)
+    end
+
+    context 'busting' do
+      specify do
+        expect(take_cards.state).to be(:bust)
+      end
+    end
+  end
 end
