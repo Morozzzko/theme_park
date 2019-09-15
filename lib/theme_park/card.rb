@@ -5,7 +5,7 @@ require 'types'
 module ThemePark
   Suit = Types::String.enum('clubs', 'spades', 'hearts', 'diamonds')
 
-  class PlayableCard < Dry::Struct
+  class Card < Dry::Struct
     Suit.values.each do |possible_suit|
       define_method "#{possible_suit}?" do
         suit == possible_suit
@@ -13,7 +13,7 @@ module ThemePark
     end
   end
 
-  class Number < PlayableCard
+  class Number < Card
     attribute :rank, Types::Integer.enum(*2..10)
     attribute :suit, Suit
 
@@ -22,7 +22,7 @@ module ThemePark
     end
   end
 
-  class Jack < PlayableCard
+  class Jack < Card
     attribute :suit, Suit
 
     def value
@@ -30,7 +30,7 @@ module ThemePark
     end
   end
 
-  class Queen < PlayableCard
+  class Queen < Card
     attribute :suit, Suit
 
     def value
@@ -38,7 +38,7 @@ module ThemePark
     end
   end
 
-  class King < PlayableCard
+  class King < Card
     attribute :suit, Suit
 
     def value
@@ -46,13 +46,11 @@ module ThemePark
     end
   end
 
-  class Ace < PlayableCard
+  class Ace < Card
     attribute :suit, Suit
 
     def value
       11
     end
   end
-
-  Card = Number | Jack | Queen | King | Ace
 end
