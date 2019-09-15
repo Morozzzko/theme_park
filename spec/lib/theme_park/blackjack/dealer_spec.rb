@@ -11,6 +11,10 @@ RSpec.describe ThemePark::Blackjack::Dealer do
   let(:deck) { ThemePark::Deck.create }
   let(:hand) { deck.shift(2) }
 
+  it_behaves_like 'blackjack player' do
+    subject(:player) { dealer }
+  end
+
   describe '#make_decision' do
     subject(:make_decision) { dealer.make_decision }
 
