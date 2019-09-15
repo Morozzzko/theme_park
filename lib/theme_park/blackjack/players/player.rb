@@ -28,7 +28,7 @@ module ThemePark
           if attributes.include?(:decision_handler)
             decision_handler.call(hand, dealer_hand)
           else
-            :surrender
+            :hit
           end
         end
 
@@ -46,6 +46,10 @@ module ThemePark
 
         def take_cards(cards)
           new(hand: hand + cards)
+        end
+
+        def surrender
+          new(state: :surrendered)
         end
       end
     end
