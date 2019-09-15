@@ -48,7 +48,7 @@ module ThemePark
         # everything is no-op right now
         case decision
         in :hit
-          player.new(hand: player.hand + select_cards!(1))
+          player.take_cards(select_cards!(1))
         in :stand
           player
         in :double_down
@@ -79,7 +79,7 @@ module ThemePark
 
       def distribute_deck!
         @players = players.map do |player|
-          player.new(hand: select_cards!(2))
+          player.take_cards(select_cards!(2))
         end
       end
 

@@ -25,6 +25,18 @@ module ThemePark
             :surrender
           end
         end
+
+        def sum
+          hand.reduce(0, &:value)
+        end
+
+        def bust?
+          sum > 21
+        end
+
+        def take_cards(cards)
+          new(hand: hand + cards)
+        end
       end
     end
   end
