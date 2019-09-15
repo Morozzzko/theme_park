@@ -118,7 +118,7 @@ RSpec.describe ThemePark::Blackjack::Game do
         end
       end
 
-      describe ':surrender' do
+      describe '#surrender' do
         let(:make_decision) do
           lambda { |_player_hand, _dealer_hand|
             :surrender
@@ -133,11 +133,32 @@ RSpec.describe ThemePark::Blackjack::Game do
           expect { proceed }.to change(game, :state).from(:players_betting).to(:finished)
         end
 
-        context 'multiple players' do
+        context 'some players are still in the game' do
+          subject(:game) do
+            described_class.new(player: player, players: players, deck: deck)
+          end
+
           let(:players) do
             [
               player,
-              ThemePark::Blackjack::Players::Player[hand: []]
+              ThemePark::Blackjack::Players::Player[
+                hand: []
+              ]
+            ]
+          end
+
+          let(:deck) do
+            ThemePark::Deck[
+              [
+                ThemePark::Number[rank: 2, suit: 'spades'],
+                ThemePark::Number[rank: 2, suit: 'hearts'],
+                ThemePark::Number[rank: 2, suit: 'diamonds'],
+                ThemePark::Number[rank: 2, suit: 'clubs'],
+                ThemePark::Number[rank: 3, suit: 'spades'],
+                ThemePark::Number[rank: 3, suit: 'hearts'],
+                ThemePark::Number[rank: 3, suit: 'diamonds'],
+                ThemePark::Number[rank: 3, suit: 'clubs']
+              ]
             ]
           end
 

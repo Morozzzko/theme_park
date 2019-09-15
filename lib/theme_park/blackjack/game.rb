@@ -58,6 +58,7 @@ module ThemePark
 
       def everyone_failed?
         # TODO: move logic somewhere else
+
         players.none? { |player| %i[playing standing].include?(player.state) }
       end
 
