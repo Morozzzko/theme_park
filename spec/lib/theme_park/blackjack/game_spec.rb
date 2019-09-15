@@ -63,7 +63,7 @@ RSpec.describe ThemePark::Blackjack::Game do
       end
 
       let(:player) do
-        ThemePark::Blackjack::Players::User.new(
+        ThemePark::Blackjack::Player.new(
           hand: [],
           decision_handler: make_decision
         )

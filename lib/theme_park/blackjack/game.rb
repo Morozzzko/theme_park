@@ -2,8 +2,9 @@
 
 require 'types'
 require 'dry-initializer'
-require 'theme_park/blackjack/players'
 require 'theme_park/deck'
+require 'theme_park/blackjack/player'
+require 'theme_park/blackjack/dealer'
 
 module ThemePark
   module Blackjack
@@ -12,7 +13,7 @@ module ThemePark
 
       option :ai_player_count, Types::Integer.constrained(included_in: 4..6), default: -> { 4 }
       option :deck, Deck, default: -> { Deck.create }
-      option :player, Players::Player, default: -> { Players::User.new(hand: []) }
+      option :player, Player, default: -> { Player.new(hand: []) }
       option :dealer, default: -> { generate_dealer! }
       option :players, default: -> { generate_players! }
       option :state,
@@ -79,13 +80,13 @@ module ThemePark
       end
 
       def generate_dealer!
-        @dealer = Players::Dealer.new(hand: select_cards!(2))
+        @dealer = Dealer.new(hand: select_cards!(2))
       end
 
       def generate_players!
         user = player.new(hand: [])
         ai_players = Array.new(ai_player_count) do
-          Players::AI.new(hand: [])
+          Player.new(hand: [])
         end
 
         [user, *ai_players].shuffle
