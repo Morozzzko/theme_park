@@ -82,7 +82,7 @@ RSpec.describe ThemePark::Blackjack::Players::Player do
     end
 
     it 'delegates to #value' do
-      hand.each do |card|
+      player.hand.each do |card|
         allow(card).to receive(:value).and_call_original
       end
 

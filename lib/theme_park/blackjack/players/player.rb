@@ -18,6 +18,12 @@ module ThemePark
         attribute? :decision_handler,
                    Types::Any
 
+        def initialize(*, **)
+          super
+
+          attributes[:state] = :bust if bust?
+        end
+
         def make_decision(dealer_hand)
           if attributes.include?(:decision_handler)
             decision_handler.call(hand, dealer_hand)
@@ -35,7 +41,7 @@ module ThemePark
         end
 
         def bust?
-          sum > 21
+          state == :bust || sum > 21
         end
 
         def take_cards(cards)
