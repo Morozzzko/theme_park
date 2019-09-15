@@ -10,11 +10,38 @@ module ThemePark
       attribute? :state,
                  Types::Symbol.default(:playing).enum(
                    :playing,
+                   :standing,
                    :bust
                  )
 
-      def make_decision(_)
-        :hit
+      def initialize(*, **)
+        super
+
+        attributes[:state] = :bust if bust?
+      end
+
+      def make_decision
+        if sum < 17
+          :hit
+        else
+          :stand
+        end
+      end
+
+      def blackjack?
+        sum == 21 && hand.size == 2
+      end
+
+      def bust?
+        state == :bust || sum > 21
+      end
+
+      def take_cards(cards)
+        new(hand: hand + cards)
+      end
+
+      def sum
+        hand.map(&:value).sum
       end
     end
   end
