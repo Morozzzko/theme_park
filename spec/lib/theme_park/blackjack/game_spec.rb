@@ -57,7 +57,7 @@ RSpec.describe ThemePark::Blackjack::Game do
 
     describe 'player decisions' do
       subject(:game) do
-        described_class.new(player: player, players: players)
+        described_class.new(players: players)
       end
 
       let(:player) do
