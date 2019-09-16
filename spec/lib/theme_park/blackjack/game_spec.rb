@@ -57,20 +57,20 @@ RSpec.describe ThemePark::Blackjack::Game do
 
     describe 'player decisions' do
       subject(:game) do
-        described_class.new(player: player, players: players)
+        described_class.new(players: players)
       end
 
       let(:player) do
         ThemePark::Blackjack::Player.new(
           hand: [],
-          decision_handler: make_decision
+          decision_handler: decision_handler
         )
       end
 
       let(:players) { [player] }
 
       describe ':hit' do
-        let(:make_decision) do
+        let(:decision_handler) do
           lambda { |_player_hand, _dealer_hand|
             :hit
           }
@@ -88,7 +88,7 @@ RSpec.describe ThemePark::Blackjack::Game do
 
         context 'the only player is about to bust' do
           subject(:game) do
-            described_class.new(player: player, players: [player], deck: deck)
+            described_class.new(players: [player], deck: deck)
           end
 
           let(:deck) do
@@ -111,13 +111,15 @@ RSpec.describe ThemePark::Blackjack::Game do
               proceed
             end.to change {
               game.players.first.state
-            }.from(:playing).to(:bust).and change(game, :state).from(:players_betting).to(:finished)
+            }.from(:playing).to(:bust).and change(
+              game, :state
+            ).from(:players_betting).to(:finished)
           end
         end
       end
 
       describe '#surrender' do
-        let(:make_decision) do
+        let(:decision_handler) do
           lambda { |_player_hand, _dealer_hand|
             :surrender
           }
@@ -133,7 +135,7 @@ RSpec.describe ThemePark::Blackjack::Game do
       end
 
       describe '#stand' do
-        let(:make_decision) do
+        let(:decision_handler) do
           lambda { |_player_hand, _dealer_hand|
             :stand
           }
@@ -144,9 +146,113 @@ RSpec.describe ThemePark::Blackjack::Game do
         end
 
         it 'moves the game to dealer when there is only one player' do
-          expect { proceed }.to change(game, :state).from(:players_betting).to(:dealer_betting)
+          expect do
+            proceed
+          end.to change(game, :state).from(:players_betting).to(:dealer_betting)
         end
       end
+    end
+
+    describe 'dealer actions' do
+      before do
+        game.players.each do |player|
+          allow(player).to receive(:make_decision).and_return(:stand)
+        end
+
+        game.proceed
+      end
+
+      context 'busting' do
+        subject(:game) do
+          described_class.new(deck: deck)
+        end
+
+        let(:deck) do
+          ThemePark::Deck[
+            Array.new(20) do
+              ThemePark::Jack[suit: 'spades']
+            end
+           ]
+        end
+
+        before do
+          allow(game.dealer).to receive(:make_decision).and_return(:hit)
+        end
+
+        specify do
+          expect do
+            proceed
+          end.to change(
+            game, :state
+          ).from(:dealer_betting).to(:finished).and change {
+            game.dealer.state
+          }.from(:playing).to(:bust)
+        end
+      end
+
+      context 'hitting' do
+        subject(:game) do
+          described_class.new(deck: deck)
+        end
+
+        let(:deck) do
+          ThemePark::Deck[
+            Array.new(20) do
+              ThemePark::Number[rank: 2, suit: 'spades']
+            end
+           ]
+        end
+
+        before do
+          allow(game.dealer).to receive(:make_decision).and_return(:hit)
+        end
+
+        specify do
+          expect do
+            proceed
+          end.not_to change(
+            game, :state
+          ).from(:dealer_betting)
+        end
+      end
+
+      context 'standing' do
+        before do
+          allow(game.dealer).to receive(:make_decision).and_return(:stand)
+        end
+
+        specify do
+          expect do
+            proceed
+          end.to change(
+            game, :state
+          ).from(:dealer_betting).to(:finished).and change {
+            game.dealer.state
+          }.from(:playing).to(:standing)
+        end
+      end
+    end
+  end
+
+  describe '#finished?' do
+    subject(:finished?) { game.finished? }
+
+    context 'finished' do
+      subject(:game) { described_class.new(state: :finished) }
+
+      specify { expect(finished?).to be(true) }
+    end
+
+    context 'dealer betting' do
+      subject(:game) { described_class.new(state: :dealer_betting) }
+
+      specify { expect(finished?).to be(false) }
+    end
+
+    context 'players betting' do
+      subject(:game) { described_class.new(state: :players_betting) }
+
+      specify { expect(finished?).to be(false) }
     end
   end
 end

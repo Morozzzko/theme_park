@@ -63,4 +63,14 @@ RSpec.describe ThemePark::Blackjack::Dealer do
       end
     end
   end
+
+  describe '#stand' do
+    subject(:stand) { dealer.stand }
+
+    specify do
+      expect(stand).to be_a(described_class)
+      expect(stand).not_to be(dealer)
+      expect(stand.state).to be(:standing)
+    end
+  end
 end

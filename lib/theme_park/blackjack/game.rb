@@ -35,10 +35,28 @@ module ThemePark
             handle_decision!(player, player.make_decision(dealer.hand))
           end
           turn_finished!
+        when :dealer_betting
+          handle_dealer_decision!(dealer.make_decision)
         end
       end
 
+      def finished?
+        state == :finished
+      end
+
       private
+
+      def handle_dealer_decision!(decision)
+        case decision
+        when :hit
+          @dealer = dealer.take_cards(select_cards!(1))
+
+          finish! if dealer.bust?
+        when :stand
+          @dealer = dealer.stand
+          finish!
+        end
+      end
 
       def handle_decision!(player, decision)
         case decision
