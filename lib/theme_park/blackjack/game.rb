@@ -11,7 +11,8 @@ module ThemePark
     class Game
       extend Dry::Initializer
 
-      option :ai_player_count, Types::Integer.constrained(included_in: 4..6), default: -> { 4 }
+      option :ai_player_count,
+             Types::Integer.constrained(included_in: 4..6), default: -> { 4 }
       option :deck, Deck, default: -> { Deck.create }
       option :player, Player, default: -> { Player.new(hand: []) }
       option :dealer, default: -> { generate_dealer! }
@@ -68,7 +69,7 @@ module ThemePark
       end
 
       def everyone_waiting?
-        players.none? { |player| player.state == 'playing' } && !everyone_failed?
+        !everyone_failed? && players.none? { |player| player.state == :playing }
       end
 
       def play_dealer!
