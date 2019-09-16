@@ -36,6 +36,10 @@ RSpec.shared_examples 'blackjack player' do
       end
 
       context 'empty hand' do
+        let(:hand) do
+          ThemePark::Deck[[]]
+        end
+
         specify do
           expect(blackjack?).to be false
         end
