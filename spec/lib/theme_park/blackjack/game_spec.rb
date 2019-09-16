@@ -4,15 +4,13 @@ require 'theme_park/blackjack/game'
 
 RSpec.describe ThemePark::Blackjack::Game do
   subject(:game) do
-    described_class.new(ai_player_count: ai_player_count)
+    described_class.new(player_count: player_count)
   end
 
-  let(:ai_player_count) { 5 }
+  let(:player_count) { 5 }
 
   describe 'initializing a game' do
-    let(:player_count) { ai_player_count + 1 }
-
-    it 'generates N AI players + user + dealer from AI player count' do
+    it 'generates N players + dealer from player count' do
       expect(game.players.count).to eql(player_count)
     end
 
@@ -37,7 +35,7 @@ RSpec.describe ThemePark::Blackjack::Game do
       game.proceed
     end
 
-    let(:game) { described_class.new(ai_player_count: ai_player_count) }
+    let(:game) { described_class.new(player_count: player_count) }
 
     it 'increases turn count by 1' do
       expect { proceed }.to change(game, :turn_count).from(0).to(1)

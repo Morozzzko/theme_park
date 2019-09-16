@@ -11,10 +11,9 @@ module ThemePark
     class Game
       extend Dry::Initializer
 
-      option :ai_player_count,
-             Types::Integer.constrained(included_in: 4..6), default: -> { 4 }
+      option :player_count,
+             Types::Integer.constrained(gteq: 1), default: -> { 4 }
       option :deck, Deck, default: -> { Deck.create }
-      option :player, Player, default: -> { Player.new(hand: []) }
       option :dealer, default: -> { generate_dealer! }
       option :players, default: -> { generate_players! }
       option :state,
@@ -85,12 +84,9 @@ module ThemePark
       end
 
       def generate_players!
-        user = player.new(hand: [])
-        ai_players = Array.new(ai_player_count) do
+        Array.new(player_count) do
           Player.new(hand: [])
-        end
-
-        [user, *ai_players].shuffle
+        end.shuffle
       end
 
       def distribute_deck!
