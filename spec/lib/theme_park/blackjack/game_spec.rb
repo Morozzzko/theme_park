@@ -88,7 +88,7 @@ RSpec.describe ThemePark::Blackjack::Game do
 
         context 'the only player is about to bust' do
           subject(:game) do
-            described_class.new(player: player, players: [player], deck: deck)
+            described_class.new(players: [player], deck: deck)
           end
 
           let(:deck) do
@@ -163,6 +163,18 @@ RSpec.describe ThemePark::Blackjack::Game do
       end
 
       context 'busting' do
+        subject(:game) do
+          described_class.new(deck: deck)
+        end
+
+        let(:deck) do
+          ThemePark::Deck[
+            Array.new(20) do
+              ThemePark::Jack[suit: 'spades']
+            end
+           ]
+        end
+
         before do
           allow(game.dealer).to receive(:make_decision).and_return(:hit)
         end
@@ -179,6 +191,18 @@ RSpec.describe ThemePark::Blackjack::Game do
       end
 
       context 'hitting' do
+        subject(:game) do
+          described_class.new(deck: deck)
+        end
+
+        let(:deck) do
+          ThemePark::Deck[
+            Array.new(20) do
+              ThemePark::Number[rank: 2, suit: 'spades']
+            end
+           ]
+        end
+
         before do
           allow(game.dealer).to receive(:make_decision).and_return(:hit)
         end
