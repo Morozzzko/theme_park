@@ -40,6 +40,10 @@ module ThemePark
         end
       end
 
+      def finished?
+        state == :finished
+      end
+
       private
 
       def handle_dealer_decision!(decision)

@@ -233,4 +233,26 @@ RSpec.describe ThemePark::Blackjack::Game do
       end
     end
   end
+
+  describe '#finished?' do
+    subject(:finished?) { game.finished? }
+
+    context 'finished' do
+      subject(:game) { described_class.new(state: :finished) }
+
+      specify { expect(finished?).to be(true) }
+    end
+
+    context 'dealer betting' do
+      subject(:game) { described_class.new(state: :dealer_betting) }
+
+      specify { expect(finished?).to be(false) }
+    end
+
+    context 'players betting' do
+      subject(:game) { described_class.new(state: :players_betting) }
+
+      specify { expect(finished?).to be(false) }
+    end
+  end
 end
