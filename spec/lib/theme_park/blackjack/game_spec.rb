@@ -63,14 +63,14 @@ RSpec.describe ThemePark::Blackjack::Game do
       let(:player) do
         ThemePark::Blackjack::Player.new(
           hand: [],
-          decision_handler: make_decision
+          decision_handler: decision_handler
         )
       end
 
       let(:players) { [player] }
 
       describe ':hit' do
-        let(:make_decision) do
+        let(:decision_handler) do
           lambda { |_player_hand, _dealer_hand|
             :hit
           }
@@ -111,13 +111,15 @@ RSpec.describe ThemePark::Blackjack::Game do
               proceed
             end.to change {
               game.players.first.state
-            }.from(:playing).to(:bust).and change(game, :state).from(:players_betting).to(:finished)
+            }.from(:playing).to(:bust).and change(
+              game, :state
+            ).from(:players_betting).to(:finished)
           end
         end
       end
 
       describe '#surrender' do
-        let(:make_decision) do
+        let(:decision_handler) do
           lambda { |_player_hand, _dealer_hand|
             :surrender
           }
@@ -133,7 +135,7 @@ RSpec.describe ThemePark::Blackjack::Game do
       end
 
       describe '#stand' do
-        let(:make_decision) do
+        let(:decision_handler) do
           lambda { |_player_hand, _dealer_hand|
             :stand
           }
@@ -144,7 +146,65 @@ RSpec.describe ThemePark::Blackjack::Game do
         end
 
         it 'moves the game to dealer when there is only one player' do
-          expect { proceed }.to change(game, :state).from(:players_betting).to(:dealer_betting)
+          expect do
+            proceed
+          end.to change(game, :state).from(:players_betting).to(:dealer_betting)
+        end
+      end
+    end
+
+    describe 'dealer actions' do
+      before do
+        game.players.each do |player|
+          allow(player).to receive(:make_decision).and_return(:stand)
+        end
+
+        game.proceed
+      end
+
+      context 'busting' do
+        before do
+          allow(game.dealer).to receive(:make_decision).and_return(:hit)
+        end
+
+        specify do
+          expect do
+            proceed
+          end.to change(
+            game, :state
+          ).from(:dealer_betting).to(:finished).and change {
+            game.dealer.state
+          }.from(:playing).to(:bust)
+        end
+      end
+
+      context 'hitting' do
+        before do
+          allow(game.dealer).to receive(:make_decision).and_return(:hit)
+        end
+
+        specify do
+          expect do
+            proceed
+          end.not_to change(
+            game, :state
+          ).from(:dealer_betting)
+        end
+      end
+
+      context 'standing' do
+        before do
+          allow(game.dealer).to receive(:make_decision).and_return(:stand)
+        end
+
+        specify do
+          expect do
+            proceed
+          end.to change(
+            game, :state
+          ).from(:dealer_betting).to(:finished).and change {
+            game.dealer.state
+          }.from(:playing).to(:standing)
         end
       end
     end

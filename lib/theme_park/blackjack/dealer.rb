@@ -43,6 +43,10 @@ module ThemePark
       def sum
         hand.map(&:value).sum
       end
+
+      def stand
+        new(state: :standing)
+      end
     end
   end
 end
