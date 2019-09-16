@@ -2,8 +2,6 @@ require: rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 2.7
-  Exclude:
-      - lib/theme_park/blackjack/game.rb
 
 Style/Documentation:
   Enabled: false
