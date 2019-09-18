@@ -23,3 +23,5 @@ gem 'dry-initializer'
 gem 'dry-struct'
 gem 'dry-types'
 gem 'tty-prompt'
+
+gem 'ascii_cards', '~> 1.0'
