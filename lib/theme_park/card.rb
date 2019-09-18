@@ -28,6 +28,10 @@ module ThemePark
     def value
       rank
     end
+
+    def to_ascii_card(state = :visible)
+      [rank, suit.to_sym, state]
+    end
   end
 
   class Jack < Card
@@ -35,6 +39,10 @@ module ThemePark
 
     def value
       10
+    end
+
+    def to_ascii_card(state = :visible)
+      [:jack, suit.to_sym, state]
     end
   end
 
@@ -44,6 +52,10 @@ module ThemePark
     def value
       10
     end
+
+    def to_ascii_card(state = :visible)
+      [:queen, suit.to_sym, state]
+    end
   end
 
   class King < Card
@@ -52,6 +64,10 @@ module ThemePark
     def value
       10
     end
+
+    def to_ascii_card(state = :visible)
+      [:king, suit.to_sym, state]
+    end
   end
 
   class Ace < Card
@@ -59,6 +75,10 @@ module ThemePark
 
     def value
       11
+    end
+
+    def to_ascii_card(state = :visible)
+      [:ace, suit.to_sym, state]
     end
   end
 end
