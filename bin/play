@@ -78,8 +78,10 @@ module ThemePark
 
     def render_hands
       player_hands = game.players.map do |player|
+        state = player.state.to_s.tr('_', ' ')
+
         [
-          "#{player.name}'s hand: (#{player.state.to_s.tr('_', ' ')})",
+          "#{player.name}'s hand: (#{state}, bet: #{player.bet})",
           ASCIICards.stringify(*player.hand.map(&:to_ascii_card))
         ]
       end
@@ -145,6 +147,7 @@ module ThemePark
               Blackjack::Player.new(
                 decision_handler: method(:decision_handler),
                 name: player_info[:name],
+                bet: player_info[:bet],
                 hand: []
               )
             ]

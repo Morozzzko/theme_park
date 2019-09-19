@@ -8,6 +8,7 @@ module ThemePark
     class Player < Dry::Struct
       attribute :hand, Types::Array.of(Card)
       attribute :name, Types::Name
+      attribute :bet, Types::SpaceDough.default(100)
       attribute? :state,
                  Types::Symbol.default(:playing).enum(
                    :playing,
