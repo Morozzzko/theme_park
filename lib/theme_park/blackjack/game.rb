@@ -115,8 +115,11 @@ module ThemePark
       end
 
       def generate_players!
-        Array.new(player_count) do
-          Player.new(hand: [])
+        Array.new(player_count) do |index|
+          Player.new(
+            hand: [],
+            name: "Player #{index + 1}"
+          )
         end.shuffle
       end
 

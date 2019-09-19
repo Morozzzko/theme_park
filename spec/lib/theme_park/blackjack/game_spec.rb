@@ -63,6 +63,7 @@ RSpec.describe ThemePark::Blackjack::Game do
       let(:player) do
         ThemePark::Blackjack::Player.new(
           hand: [],
+          name: 'Han Solo',
           decision_handler: decision_handler
         )
       end
