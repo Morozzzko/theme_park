@@ -13,8 +13,6 @@ module ThemePark
     class Render
       def call(element)
         case element
-        when nil
-          # do nothing
         when String
           puts element
         when Array
@@ -23,6 +21,8 @@ module ThemePark
           end
         when Proc
           element.call
+        when nil
+          nil
         else
           raise ArgumentError, "Unknown element: #{element.inspect}"
         end
@@ -87,7 +87,7 @@ module ThemePark
       ]
     end
 
-    def game_state
+    def game_state # rubocop:disable Metrics/MethodLength
       case game.state
       when :players_betting
         [
@@ -115,15 +115,12 @@ module ThemePark
           "Result: dealer is #{game.dealer.state}",
           "Player is #{game.players.first.state}"
         ]
-      else
-        binding.pry
-        2
       end
     end
 
-    def collect_data
+    def collect_data # rubocop:disable Metrics/MethodLength
       lambda {
-        player_params = tty_prompt.collect do
+        tty_prompt.collect do
           key(:name).ask(
             'Alright mate, what is your name though?',
             default: ENV['USER']
@@ -139,7 +136,10 @@ module ThemePark
         set_state do
           @game = Blackjack::Game.new(
             players: [
-              Blackjack::Player.new(decision_handler: method(:decision_handler), hand: [])
+              Blackjack::Player.new(
+                decision_handler: method(:decision_handler),
+                hand: []
+              )
             ]
           )
 
@@ -187,7 +187,7 @@ module ThemePark
       ]
     end
 
-    def say_ciao!
+    def say_ciao! # rubocop:disable Metrics/MethodLength
       puts %q{
        .-------------.
       ( Ciao, losers! )
@@ -211,7 +211,7 @@ module ThemePark
       }
     end
 
-    def curse_goodbye
+    def curse_goodbye # rubocop:disable Metrics/MethodLength
       %q{
                o
                |
@@ -255,7 +255,7 @@ module ThemePark
       ).to_sym
     end
 
-    def bender_say(*lines)
+    def bender_say(*lines) # rubocop:disable Metrics/MethodLength
       max_size = lines.map(&:size).max
 
       borders = '_' * max_size
