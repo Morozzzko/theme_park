@@ -19,6 +19,10 @@ module ThemePark
 
   class HiddenCard < Card
     attribute :original, Card
+
+    def to_ascii_card
+      %i[hidden hidden hidden]
+    end
   end
 
   class Number < Card
