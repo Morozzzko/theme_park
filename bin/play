@@ -77,21 +77,27 @@ module ThemePark
     private
 
     def render_hands
+      player_hands = game.players.map do |player|
+        [
+          "#{player.name}'s hand: (#{player.state.to_s.tr('_', ' ')})",
+          ASCIICards.stringify(*player.hand.map(&:to_ascii_card))
+        ]
+      end
+
       [
         "Dealer's hand:",
         ASCIICards.stringify(
           *game.dealer_hand.map(&:to_ascii_card)
         ),
-        'Your hand:',
-        ASCIICards.stringify(*game.players.first.hand.map(&:to_ascii_card))
+        *player_hands
       ]
     end
 
-    def game_state # rubocop:disable Metrics/MethodLength
+    def game_state
       case game.state
       when :players_betting
         [
-          "#### You're playing, turn: #{game.turn_count + 1}###",
+          "#### Players are betting turn: #{game.turn_count + 1} ###",
           render_hands,
           lambda {
             game.proceed
@@ -118,9 +124,9 @@ module ThemePark
       end
     end
 
-    def collect_data # rubocop:disable Metrics/MethodLength
+    def collect_data
       lambda {
-        tty_prompt.collect do
+        player_info = tty_prompt.collect do
           key(:name).ask(
             'Alright mate, what is your name though?',
             default: ENV['USER']
@@ -138,6 +144,7 @@ module ThemePark
             players: [
               Blackjack::Player.new(
                 decision_handler: method(:decision_handler),
+                name: player_info[:name],
                 hand: []
               )
             ]
@@ -187,7 +194,7 @@ module ThemePark
       ]
     end
 
-    def say_ciao! # rubocop:disable Metrics/MethodLength
+    def say_ciao!
       puts %q{
        .-------------.
       ( Ciao, losers! )
@@ -211,7 +218,7 @@ module ThemePark
       }
     end
 
-    def curse_goodbye # rubocop:disable Metrics/MethodLength
+    def curse_goodbye
       %q{
                o
                |
@@ -255,7 +262,7 @@ module ThemePark
       ).to_sym
     end
 
-    def bender_say(*lines) # rubocop:disable Metrics/MethodLength
+    def bender_say(*lines)
       max_size = lines.map(&:size).max
 
       borders = '_' * max_size

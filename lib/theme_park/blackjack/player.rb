@@ -7,6 +7,7 @@ module ThemePark
   module Blackjack
     class Player < Dry::Struct
       attribute :hand, Types::Array.of(Card)
+      attribute :name, Types::Name
       attribute? :state,
                  Types::Symbol.default(:playing).enum(
                    :playing,

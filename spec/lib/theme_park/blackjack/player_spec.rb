@@ -5,7 +5,7 @@ require 'theme_park/blackjack/player'
 
 RSpec.describe ThemePark::Blackjack::Player do
   subject(:player) do
-    described_class.new(hand: hand)
+    described_class.new(hand: hand, name: 'Han')
   end
 
   let(:hand) { [] }
