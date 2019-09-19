@@ -10,6 +10,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.4.0)
+    ascii_cards (1.0.0)
     ast (2.4.0)
     backport (1.1.2)
     backports (3.15.0)
@@ -45,6 +46,7 @@ GEM
       dry-equalizer (~> 0.2, >= 0.2.2)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
+    equatable (0.6.1)
     ethon (0.12.0)
       ffi (>= 1.3.0)
     faraday (0.15.4)
@@ -70,11 +72,15 @@ GEM
     mini_portile2 (2.4.0)
     multi_json (1.13.1)
     multipart-post (2.1.1)
+    necromancer (0.5.0)
     net-http-persistent (2.9.4)
     net-http-pipeline (1.0.1)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     parallel (1.17.0)
+    pastel (0.7.3)
+      equatable (~> 0.6)
+      tty-color (~> 0.5)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -140,16 +146,29 @@ GEM
       launchy (~> 2.1)
       pusher-client (~> 0.4)
       typhoeus (~> 0.6, >= 0.6.8)
+    tty-color (0.5.0)
+    tty-cursor (0.7.0)
+    tty-prompt (0.19.0)
+      necromancer (~> 0.5.0)
+      pastel (~> 0.7.0)
+      tty-reader (~> 0.6.0)
+    tty-reader (0.6.0)
+      tty-cursor (~> 0.7)
+      tty-screen (~> 0.7)
+      wisper (~> 2.0.0)
+    tty-screen (0.7.0)
     typhoeus (0.8.0)
       ethon (>= 0.8.0)
     unicode-display_width (1.6.0)
     websocket (1.2.8)
+    wisper (2.0.0)
     yard (0.9.20)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  ascii_cards (~> 1.0)
   dry-initializer
   dry-struct
   dry-types
@@ -162,6 +181,7 @@ DEPENDENCIES
   simplecov
   solargraph
   travis
+  tty-prompt
 
 BUNDLED WITH
    2.1.0.pre.1

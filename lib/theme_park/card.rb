@@ -19,6 +19,10 @@ module ThemePark
 
   class HiddenCard < Card
     attribute :original, Card
+
+    def to_ascii_card
+      %i[hidden hidden hidden]
+    end
   end
 
   class Number < Card
@@ -28,6 +32,10 @@ module ThemePark
     def value
       rank
     end
+
+    def to_ascii_card
+      [rank, suit.to_sym]
+    end
   end
 
   class Jack < Card
@@ -35,6 +43,10 @@ module ThemePark
 
     def value
       10
+    end
+
+    def to_ascii_card
+      [:jack, suit.to_sym]
     end
   end
 
@@ -44,6 +56,10 @@ module ThemePark
     def value
       10
     end
+
+    def to_ascii_card
+      [:queen, suit.to_sym]
+    end
   end
 
   class King < Card
@@ -52,6 +68,10 @@ module ThemePark
     def value
       10
     end
+
+    def to_ascii_card
+      [:king, suit.to_sym]
+    end
   end
 
   class Ace < Card
@@ -59,6 +79,10 @@ module ThemePark
 
     def value
       11
+    end
+
+    def to_ascii_card
+      [:ace, suit.to_sym]
     end
   end
 end

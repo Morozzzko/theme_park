@@ -6,7 +6,10 @@ rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
 
 require 'simplecov'
-SimpleCov.start
+
+SimpleCov.start do
+  add_filter 'bin/**/*'
+end
 
 Dir[File.join(__dir__, 'support/shared/**/*')].each(&method(:require))
 

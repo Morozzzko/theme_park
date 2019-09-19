@@ -1,0 +1,298 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+lib_dir = File.expand_path('../lib', __dir__)
+$LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
+
+require 'theme_park'
+require 'tty-prompt'
+require 'ascii_cards'
+
+module ThemePark
+  class CLI
+    class Render
+      def call(element)
+        case element
+        when String
+          puts element
+        when Array
+          element.map do |child|
+            call(child)
+          end
+        when Proc
+          element.call
+        when nil
+          nil
+        else
+          raise ArgumentError, "Unknown element: #{element.inspect}"
+        end
+      end
+    end
+
+    State = Types::Symbol.enum(
+      :welcoming,
+      :collecting_data,
+      :playing,
+      :done,
+      :leaving
+    )
+    attr_reader :tty_prompt, :state, :render, :game
+
+    def initialize
+      @tty_prompt = TTY::Prompt.new
+      @state = :welcoming
+      @render = Render.new
+    end
+
+    def render!
+      case state
+      when :welcoming
+        render.call(welcome_player)
+      when :collecting_data
+        render.call(collect_data)
+      when :playing
+        render.call(game_state)
+      when :done
+        render.call(game_results)
+      when :leaving
+        render.call(curse_goodbye)
+        set_state { exit 0 }
+      end
+    end
+
+    def set_state
+      result = yield
+
+      @state = State[result] if result
+
+      render!
+    end
+
+    def play!
+      render!
+    rescue Interrupt
+      say_ciao!
+    end
+
+    private
+
+    def render_hands
+      [
+        "Dealer's hand:",
+        ASCIICards.stringify(
+          *game.dealer_hand.map(&:to_ascii_card)
+        ),
+        'Your hand:',
+        ASCIICards.stringify(*game.players.first.hand.map(&:to_ascii_card))
+      ]
+    end
+
+    def game_state # rubocop:disable Metrics/MethodLength
+      case game.state
+      when :players_betting
+        [
+          "#### You're playing, turn: #{game.turn_count + 1}###",
+          render_hands,
+          lambda {
+            game.proceed
+            render!
+          }
+        ]
+      when :dealer_betting
+        [
+          "Now it's dealer's turn to play",
+          render_hands,
+          lambda {
+            tty_prompt.keypress('Press any key to continue')
+            game.proceed
+            render!
+          }
+        ]
+      when :finished
+        [
+          render_hands,
+          "Alright then, we're done",
+          "Result: dealer is #{game.dealer.state}",
+          "Player is #{game.players.first.state}"
+        ]
+      end
+    end
+
+    def collect_data # rubocop:disable Metrics/MethodLength
+      lambda {
+        tty_prompt.collect do
+          key(:name).ask(
+            'Alright mate, what is your name though?',
+            default: ENV['USER']
+          )
+
+          key(:bet).ask(
+            "How much do you want to bet? We're talking SpaceDough",
+            default: 200,
+            convert: :int
+          )
+        end
+
+        set_state do
+          @game = Blackjack::Game.new(
+            players: [
+              Blackjack::Player.new(
+                decision_handler: method(:decision_handler),
+                hand: []
+              )
+            ]
+          )
+
+          :playing
+        end
+      }
+    end
+
+    def bender_theme_park_logo
+      %q{
+      ______                _           _
+      | ___ \              | |         ( )
+      | |_/ / ___ _ __   __| | ___ _ __|/ ___
+      | ___ \/ _ \ '_ \ / _` |/ _ \ '__| / __|
+      | |_/ /  __/ | | | (_| |  __/ |    \__ \
+      \____/ \___|_| |_|\__,_|\___|_|    |___/
+
+
+       _   _                                            _
+      | | | |                                          | |
+      | |_| |__   ___ _ __ ___   ___   _ __   __ _ _ __| | __
+      | __| '_ \ / _ \ '_ ` _ \ / _ \ | '_ \ / _` | '__| |/ /
+      | |_| | | |  __/ | | | | |  __/ | |_) | (_| | |  |   <
+       \__|_| |_|\___|_| |_| |_|\___| | .__/ \__,_|_|  |_|\_\
+                                      | |
+                                      |_|
+      }
+    end
+
+    def welcome_player
+      [
+        bender_theme_park_logo,
+        bender_say(
+          'Welcome to my theme park',
+          "So far I've only got blackjack",
+          'Wanna hang around and play?'
+        ),
+        lambda {
+          if tty_prompt.yes?('Wanna play?')
+            set_state { :collecting_data }
+          else
+            set_state { :leaving }
+          end
+        }
+      ]
+    end
+
+    def say_ciao! # rubocop:disable Metrics/MethodLength
+      puts %q{
+       .-------------.
+      ( Ciao, losers! )
+       '-------------,
+                       `.
+                         `.
+                           `. ___
+                          __,' __`.                _..----....____
+              __...--.'``;.   ,.   ;``--..__     .'    ,-._    _.-'
+        _..-''-------'   `'   `'   `'     O ``-''._   (,;') _,'
+      ,'________________                          \`-._`-','
+       `._              ```````````------...___   '-.._'-:
+          ```--.._      ,.                     ````--...__\-.
+                  `.--. `-`                       ____    |  |`
+                    `. `.                       ,'`````.  ;  ;`
+                      `._`.        __________   `.      \'__/`
+                         `-:._____/______/___/____`.     \  `
+                                     |       `._    `.    \
+                                     `._________`-.   `.   `.___
+                                                   SSt  `------'`
+      }
+    end
+
+    def curse_goodbye # rubocop:disable Metrics/MethodLength
+      %q{
+               o
+               |
+             ,'~'.
+            /     \
+           |   ____|_
+           |  '___,,_'         .--------------------.
+           |  ||(o |o)|       ( Stop wasting my time )
+           |   -------         ,--------------------'
+           |  _____|         -'
+           \  '####,
+            -------
+          /________\
+        (  )        |)
+        '_ ' ,------|\         _
+       /_ /  |      |_\        ||
+      /_ /|  |     o| _\      _||
+     /_ / |  |      |\ _\____//' |
+    (  (  |  |      | (_,_,_,____/
+     \ _\ |   ------|
+      \ _\|_________|
+       \ _\ \__\\__\
+       |__| |__||__|
+    ||/__/  |__||__|
+            |__||__|
+            |__||__|
+            /__)/__)
+           /__//__/
+          /__//__/
+         /__//__/.
+       .'    '.   '.
+      (_kOs____)____)
+      }
+    end
+
+    def decision_handler(_hand, _dealer_hand)
+      tty_prompt.select(
+        'What are you going to do?',
+        %w[hit stand surrender],
+        cycle: true
+      ).to_sym
+    end
+
+    def bender_say(*lines) # rubocop:disable Metrics/MethodLength
+      max_size = lines.map(&:size).max
+
+      borders = '_' * max_size
+      blank_lines = ' ' * max_size
+
+      lines = lines.map { |line| line.ljust(max_size) }
+
+      final_lines = [
+        borders,
+        blank_lines,
+        *lines,
+        borders
+      ]
+
+      %q{
+
+              _
+             ( )
+              H
+              H
+             _H_              ___%s__
+          .-'-.-'-.          |   %s  |
+         /         \         |   %s  |
+        |           |        |   %s  |
+        |   .-------'._      |   %s  |
+        |  / /  '.' '. \     |___%s__|
+        |  \ \ @   @ / /       /
+        |   '---------'       /
+        |    _______|        /
+        |  .'-+-+-+|        /
+        |  '.-+-+-+|
+        |    """""" |
+        '-.__   __.-'
+             """
+      } % final_lines
+    end
+  end
+end
+
+ThemePark::CLI.new.play!
