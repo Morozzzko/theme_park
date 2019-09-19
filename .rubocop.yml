@@ -15,7 +15,7 @@ Metrics/AbcSize:
   Enabled: false
 
 Metrics/MethodLength:
-  Enabled: true
+  Enabled: false
   CountComments: false
   Max: 20
 
