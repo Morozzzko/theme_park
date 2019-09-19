@@ -25,6 +25,9 @@ Lint/AmbiguousBlockAssociation:
 Style/FormatStringToken:
   Enabled: false
 
+Style/FormatString:
+  Enabled: false
+
 RSpec/MultipleExpectations:
   Enabled: true
   Max: 5
