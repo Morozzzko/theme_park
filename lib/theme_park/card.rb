@@ -11,6 +11,14 @@ module ThemePark
         suit == possible_suit
       end
     end
+
+    def hide
+      HiddenCard[original: self]
+    end
+  end
+
+  class HiddenCard < Card
+    attribute :original, Card
   end
 
   class Number < Card

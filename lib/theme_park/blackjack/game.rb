@@ -44,6 +44,19 @@ module ThemePark
         state == :finished
       end
 
+      def dealer_hand
+        case state
+        when :players_betting
+          first, *rest = dealer.hand
+          [
+            first,
+            *rest.map(&:hide)
+          ]
+        else
+          dealer.hand
+        end
+      end
+
       private
 
       def handle_dealer_decision!(decision)

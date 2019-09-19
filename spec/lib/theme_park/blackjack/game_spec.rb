@@ -234,6 +234,33 @@ RSpec.describe ThemePark::Blackjack::Game do
     end
   end
 
+  describe '#dealer_hand' do
+    subject(:dealer_hand) { game.dealer_hand }
+
+    context 'finished' do
+      subject(:game) { described_class.new(state: :finished) }
+
+      specify { expect(dealer_hand).to be(game.dealer.hand) }
+    end
+
+    context 'dealer betting' do
+      subject(:game) { described_class.new(state: :dealer_betting) }
+
+      specify { expect(dealer_hand).to be(game.dealer.hand) }
+    end
+
+    context 'players betting' do
+      subject(:game) { described_class.new(state: :players_betting) }
+
+      specify do
+        expect(dealer_hand).to match([
+                                       game.dealer.hand.first,
+                                       ThemePark::HiddenCard
+                                     ])
+      end
+    end
+  end
+
   describe '#finished?' do
     subject(:finished?) { game.finished? }
 
