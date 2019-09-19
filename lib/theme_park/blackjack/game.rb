@@ -57,6 +57,10 @@ module ThemePark
         end
       end
 
+      def bank
+        players.map(&:bet).sum
+      end
+
       private
 
       def handle_dealer_decision!(decision)

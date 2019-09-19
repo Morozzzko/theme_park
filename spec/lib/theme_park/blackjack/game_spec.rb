@@ -285,4 +285,12 @@ RSpec.describe ThemePark::Blackjack::Game do
       specify { expect(finished?).to be(false) }
     end
   end
+
+  describe '#bank' do
+    subject(:bank) { game.bank }
+
+    it 'is a sum of all bets' do
+      expect(bank).to eql(game.players.map(&:bet).sum)
+    end
+  end
 end
