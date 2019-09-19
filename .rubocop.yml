@@ -7,6 +7,13 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
+# TODO: enable lengths and abc size when the design is apparent
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
 Metrics/MethodLength:
   Enabled: true
   CountComments: false
