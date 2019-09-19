@@ -4,8 +4,8 @@ RSpec.shared_examples 'blackjack player' do
   describe '#blackjack?' do
     subject(:blackjack?) { player.blackjack? }
 
-    context 'real blackjack' do
-      context 'ace first' do
+    context 'when real blackjack' do
+      context 'when ace first' do
         let(:hand) do
           ThemePark::Deck[
             [
@@ -20,7 +20,7 @@ RSpec.shared_examples 'blackjack player' do
         end
       end
 
-      context 'ace second' do
+      context 'when ace second' do
         let(:hand) do
           ThemePark::Deck[
             [
@@ -35,7 +35,7 @@ RSpec.shared_examples 'blackjack player' do
         end
       end
 
-      context 'empty hand' do
+      context 'when empty hand' do
         let(:hand) do
           ThemePark::Deck[[]]
         end
@@ -45,7 +45,7 @@ RSpec.shared_examples 'blackjack player' do
         end
       end
 
-      context '21, not blackjack' do
+      context 'when 21, not blackjack' do
         let(:hand) do
           ThemePark::Deck[
             [
@@ -87,7 +87,7 @@ RSpec.shared_examples 'blackjack player' do
     end
 
     describe 'ace' do
-      context 'blackjack' do
+      context 'when blackjack' do
         let(:hand) do
           [
             ThemePark::Ace[suit: 'spades'],
@@ -119,7 +119,7 @@ RSpec.shared_examples 'blackjack player' do
       expect(take_cards.hand).to eql(player.hand + cards)
     end
 
-    context 'busting' do
+    context 'when busting' do
       specify do
         expect(take_cards.state).to be(:bust)
       end

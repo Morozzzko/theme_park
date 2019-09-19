@@ -86,7 +86,7 @@ RSpec.describe ThemePark::Blackjack::Game do
           }.from(2).to(3)
         end
 
-        context 'the only player is about to bust' do
+        context 'when the only player is about to bust' do
           subject(:game) do
             described_class.new(players: [player], deck: deck)
           end
@@ -130,7 +130,9 @@ RSpec.describe ThemePark::Blackjack::Game do
         end
 
         it 'finishes game when there is only one player' do
-          expect { proceed }.to change(game, :state).from(:players_betting).to(:finished)
+          expect do
+            proceed
+          end.to change(game, :state).from(:players_betting).to(:finished)
         end
       end
 
@@ -162,7 +164,7 @@ RSpec.describe ThemePark::Blackjack::Game do
         game.proceed
       end
 
-      context 'busting' do
+      context 'when busting' do
         subject(:game) do
           described_class.new(deck: deck)
         end
@@ -190,7 +192,7 @@ RSpec.describe ThemePark::Blackjack::Game do
         end
       end
 
-      context 'hitting' do
+      context 'when hitting' do
         subject(:game) do
           described_class.new(deck: deck)
         end
@@ -216,7 +218,7 @@ RSpec.describe ThemePark::Blackjack::Game do
         end
       end
 
-      context 'standing' do
+      context 'when standing' do
         before do
           allow(game.dealer).to receive(:make_decision).and_return(:stand)
         end
@@ -237,19 +239,19 @@ RSpec.describe ThemePark::Blackjack::Game do
   describe '#dealer_hand' do
     subject(:dealer_hand) { game.dealer_hand }
 
-    context 'finished' do
+    context 'when finished' do
       subject(:game) { described_class.new(state: :finished) }
 
       specify { expect(dealer_hand).to be(game.dealer.hand) }
     end
 
-    context 'dealer betting' do
+    context 'when dealer betting' do
       subject(:game) { described_class.new(state: :dealer_betting) }
 
       specify { expect(dealer_hand).to be(game.dealer.hand) }
     end
 
-    context 'players betting' do
+    context 'when players betting' do
       subject(:game) { described_class.new(state: :players_betting) }
 
       specify do
@@ -264,19 +266,19 @@ RSpec.describe ThemePark::Blackjack::Game do
   describe '#finished?' do
     subject(:finished?) { game.finished? }
 
-    context 'finished' do
+    context 'when finished' do
       subject(:game) { described_class.new(state: :finished) }
 
       specify { expect(finished?).to be(true) }
     end
 
-    context 'dealer betting' do
+    context 'when dealer betting' do
       subject(:game) { described_class.new(state: :dealer_betting) }
 
       specify { expect(finished?).to be(false) }
     end
 
-    context 'players betting' do
+    context 'when players betting' do
       subject(:game) { described_class.new(state: :players_betting) }
 
       specify { expect(finished?).to be(false) }

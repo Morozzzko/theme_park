@@ -1,4 +1,5 @@
-require: rubocop-rspec
+require:
+ - rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 2.7
@@ -14,11 +15,14 @@ Metrics/MethodLength:
 Lint/AmbiguousBlockAssociation:
   Enabled: false
 
+Style/FormatStringToken:
+  Enabled: false
+
 RSpec/MultipleExpectations:
   Enabled: true
   Max: 5
 
-RSpec/NestedGroup:
+RSpec/NestedGroups:
   Enabled: true
   Max: 5
 

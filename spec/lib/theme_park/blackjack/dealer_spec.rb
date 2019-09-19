@@ -18,7 +18,7 @@ RSpec.describe ThemePark::Blackjack::Dealer do
   describe '#make_decision' do
     subject(:make_decision) { dealer.make_decision }
 
-    context 'total less than 17' do
+    context 'when total less than 17' do
       let(:hand) do
         ThemePark::Deck[
           [
@@ -33,7 +33,7 @@ RSpec.describe ThemePark::Blackjack::Dealer do
       end
     end
 
-    context 'total over than 17' do
+    context 'when total over than 17' do
       let(:hand) do
         ThemePark::Deck[
           [
@@ -48,7 +48,7 @@ RSpec.describe ThemePark::Blackjack::Dealer do
       end
     end
 
-    context 'total exactly 17' do
+    context 'when total exactly 17' do
       let(:hand) do
         ThemePark::Deck[
           [
