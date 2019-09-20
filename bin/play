@@ -117,13 +117,29 @@ module ThemePark
           }
         ]
       when :finished
-        [
-          render_hands,
-          "Alright then, we're done",
-          "Result: dealer is #{game.dealer.state}",
-          "Player is #{game.players.first.state}"
-        ]
+        render_finished_state
       end
+    end
+
+    def render_finished_state
+      results = game.result.map do |result, player, amount = nil|
+        case result
+        when :lost
+          "#{player.name} has lost and gets Ɖ#{amount} from the casino"
+        when :won
+          "#{player.name} has won and gets Ɖ#{amount} from the casino"
+        when :surrendered
+          "#{player.name} has surrendered and pays Ɖ#{amount} to the casino"
+        when :tied
+          "#{player.name} has tied with the dealer and gets their bet back"
+        end
+      end
+
+      [
+        'Hands at the end of the game',
+        render_hands,
+        *results
+      ]
     end
 
     def collect_data
