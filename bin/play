@@ -60,25 +60,6 @@ module ThemePark
 
     private
 
-    def render_hands
-      player_hands = game.players.map do |player|
-        state = player.state.to_s.tr('_', ' ')
-
-        [
-          "#{player.name}'s hand: (#{state}, bet: #{player.bet})",
-          ASCIICards.stringify(*player.hand.map(&:to_ascii_card))
-        ]
-      end
-
-      [
-        "Dealer's hand:",
-        ASCIICards.stringify(
-          *game.dealer_hand.map(&:to_ascii_card)
-        ),
-        *player_hands
-      ]
-    end
-
     def game_state
       case game.state
       when :players_betting
@@ -93,7 +74,7 @@ module ThemePark
     def render_betting_state
       [
         "#### Players are betting turn: #{game.turn_count + 1} ###",
-        render_hands,
+        Components::Desk.new(game: game),
         lambda {
           game.proceed
           render!
@@ -105,7 +86,7 @@ module ThemePark
     def render_dealer_state
       [
         "#### Now it's dealer's turn to play ####",
-        render_hands,
+        Components::Desk.new(game: game),
         lambda {
           tty_prompt.keypress('Press any key to continue')
           game.proceed
@@ -133,7 +114,7 @@ module ThemePark
         '#### The game has finished ####',
         '',
         '#### Hands at the end of the game ####',
-        render_hands,
+        Components::Desk.new(game: game),
         *results
       ]
     end

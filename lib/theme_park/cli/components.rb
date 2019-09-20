@@ -10,6 +10,29 @@ module ThemePark
         end
       end
 
+      class Desk < Component
+        def render
+          game = props[:game]
+
+          player_hands = game.players.map do |player|
+            state = player.state.to_s.tr('_', ' ')
+
+            [
+              "#{player.name}'s hand: (#{state}, bet: #{player.bet})",
+              ASCIICards.stringify(*player.hand.map(&:to_ascii_card))
+            ]
+          end
+
+          [
+            "Dealer's hand:",
+            ASCIICards.stringify(
+              *game.dealer_hand.map(&:to_ascii_card)
+            ),
+            *player_hands
+          ]
+        end
+      end
+
       class ThemeParkLogo < Component
         def render
           %q{
