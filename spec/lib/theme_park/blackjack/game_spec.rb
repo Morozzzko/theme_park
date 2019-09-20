@@ -336,13 +336,6 @@ RSpec.describe ThemePark::Blackjack::Game do
         specify { expect(result).to eql([[:lost, player]]) }
       end
 
-      # elsif player.sum > dealer.sum
-      #   :won
-      # elsif player.sum < dealer.sum
-      #   :lost
-      # else
-      #   :tie
-      # end
       context 'when dealer is bust but player is not' do
         let(:player_hand) do
           [
@@ -466,6 +459,18 @@ RSpec.describe ThemePark::Blackjack::Game do
         end
 
         specify { expect(result).to eql([[:tie, player]]) }
+      end
+
+      context 'when player has surrendered' do
+        let(:player) do
+          ThemePark::Blackjack::Player.new(
+            hand: player_hand,
+            name: 'Han Solo',
+            state: :surrendered
+          )
+        end
+
+        specify { expect(result).to eql([[:surrendered, player]]) }
       end
     end
 

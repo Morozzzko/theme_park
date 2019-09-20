@@ -57,6 +57,8 @@ module ThemePark
             [:tie, player]
           when :blackjack
             [:won, player, 1.5 * player.bet]
+          when :surrendered
+            [:surrendered, player]
           end
         end
       end
@@ -81,7 +83,9 @@ module ThemePark
       private
 
       def player_result(player)
-        if player.bust?
+        if player.surrendered?
+          :surrendered
+        elsif player.bust?
           :lost
         elsif dealer.bust?
           :won
