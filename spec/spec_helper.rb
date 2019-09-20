@@ -9,6 +9,7 @@ require 'simplecov'
 
 SimpleCov.start do
   add_filter 'bin/**/*'
+  add_filter 'lib/theme_park/cli'
 end
 
 Dir[File.join(__dir__, 'support/shared/**/*')].each(&method(:require))
