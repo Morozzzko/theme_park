@@ -333,7 +333,7 @@ RSpec.describe ThemePark::Blackjack::Game do
           ]
         end
 
-        specify { expect(result).to eql([[:lost, player]]) }
+        specify { expect(result).to eql([[:lost, player, player.bet]]) }
       end
 
       context 'when dealer is bust but player is not' do
@@ -371,7 +371,7 @@ RSpec.describe ThemePark::Blackjack::Game do
           ]
         end
 
-        specify { expect(result).to eql([[:lost, player]]) }
+        specify { expect(result).to eql([[:lost, player, player.bet]]) }
       end
 
       context 'when player has blackjack, but dealer does not' do
@@ -442,7 +442,7 @@ RSpec.describe ThemePark::Blackjack::Game do
           ]
         end
 
-        specify { expect(result).to eql([[:lost, player]]) }
+        specify { expect(result).to eql([[:lost, player, player.bet]]) }
       end
 
       context 'when dealer and player have similar hands' do
@@ -470,7 +470,9 @@ RSpec.describe ThemePark::Blackjack::Game do
           )
         end
 
-        specify { expect(result).to eql([[:surrendered, player]]) }
+        specify do
+          expect(result).to eql([[:surrendered, player, player.bet * 0.5]])
+        end
       end
     end
 

@@ -50,7 +50,7 @@ module ThemePark
         players.map do |player|
           case player_result(player)
           when :lost
-            [:lost, player]
+            [:lost, player, player.bet]
           when :won
             [:won, player, player.bet]
           when :tie
@@ -58,7 +58,7 @@ module ThemePark
           when :blackjack
             [:won, player, 1.5 * player.bet]
           when :surrendered
-            [:surrendered, player]
+            [:surrendered, player, 0.5 * player.bet]
           end
         end
       end

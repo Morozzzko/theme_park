@@ -125,7 +125,7 @@ module ThemePark
       results = game.result.map do |result, player, amount = nil|
         case result
         when :lost
-          "#{player.name} has lost and gets Ɖ#{amount} from the casino"
+          "#{player.name} has lost Ɖ#{amount} to the casino"
         when :won
           "#{player.name} has won and gets Ɖ#{amount} from the casino"
         when :surrendered
