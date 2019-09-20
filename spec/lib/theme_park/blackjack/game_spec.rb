@@ -438,7 +438,7 @@ RSpec.describe ThemePark::Blackjack::Game do
         let(:dealer_hand) do
           [
             ThemePark::Jack[suit: 'spades'],
-            ThemePark::Ace[suit: 'spades']
+            ThemePark::Queen[suit: 'spades']
           ]
         end
 
