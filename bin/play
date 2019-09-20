@@ -98,27 +98,37 @@ module ThemePark
     def game_state
       case game.state
       when :players_betting
-        [
-          "#### Players are betting turn: #{game.turn_count + 1} ###",
-          render_hands,
-          lambda {
-            game.proceed
-            render!
-          }
-        ]
+        render_betting_state
       when :dealer_betting
-        [
-          "Now it's dealer's turn to play",
-          render_hands,
-          lambda {
-            tty_prompt.keypress('Press any key to continue')
-            game.proceed
-            render!
-          }
-        ]
+        render_dealer_state
       when :finished
         render_finished_state
       end
+    end
+
+    def render_betting_state
+      [
+        "#### Players are betting turn: #{game.turn_count + 1} ###",
+        render_hands,
+        lambda {
+          game.proceed
+          render!
+        },
+        "\n"
+      ]
+    end
+
+    def render_dealer_state
+      [
+        "#### Now it's dealer's turn to play ####",
+        render_hands,
+        lambda {
+          tty_prompt.keypress('Press any key to continue')
+          game.proceed
+          render!
+        },
+        "\n"
+      ]
     end
 
     def render_finished_state
@@ -130,13 +140,15 @@ module ThemePark
           "#{player.name} has won and gets Ɖ#{amount} from the casino"
         when :surrendered
           "#{player.name} has surrendered and pays Ɖ#{amount} to the casino"
-        when :tied
+        when :tie
           "#{player.name} has tied with the dealer and gets their bet back"
         end
       end
 
       [
-        'Hands at the end of the game',
+        '#### The game has finished ####',
+        '',
+        '#### Hands at the end of the game ####',
         render_hands,
         *results
       ]
