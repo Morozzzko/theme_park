@@ -19,6 +19,14 @@ Metrics/MethodLength:
   CountComments: false
   Max: 20
 
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# End of temporarily disabled rules
+
 Lint/AmbiguousBlockAssociation:
   Enabled: false
 

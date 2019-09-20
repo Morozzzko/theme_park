@@ -293,4 +293,199 @@ RSpec.describe ThemePark::Blackjack::Game do
       expect(bank).to eql(game.players.map(&:bet).sum)
     end
   end
+
+  describe '#result' do
+    subject(:result) { game.result }
+
+    context 'when finished' do
+      subject(:game) do
+        described_class.new(
+          state: :finished,
+          players: [
+            player
+          ],
+          dealer: dealer
+        )
+      end
+
+      let(:dealer) do
+        ThemePark::Blackjack::Dealer.new(
+          hand: dealer_hand
+        )
+      end
+
+      let(:player) do
+        ThemePark::Blackjack::Player.new(
+          hand: player_hand,
+          name: 'Han Solo'
+        )
+      end
+
+      let(:dealer_hand) { [] }
+      let(:player_hand) { [] }
+
+      context 'when player is bust' do
+        let(:player_hand) do
+          [
+            ThemePark::Jack[suit: 'diamonds'],
+            ThemePark::Queen[suit: 'spades'],
+            ThemePark::King[suit: 'clubs']
+          ]
+        end
+
+        specify { expect(result).to eql([[:lost, player, player.bet]]) }
+      end
+
+      context 'when dealer is bust but player is not' do
+        let(:player_hand) do
+          [
+            ThemePark::Jack[suit: 'diamonds'],
+            ThemePark::Queen[suit: 'spades']
+          ]
+        end
+
+        let(:dealer_hand) do
+          [
+            ThemePark::Jack[suit: 'spades'],
+            ThemePark::Queen[suit: 'clubs'],
+            ThemePark::King[suit: 'hearts']
+          ]
+        end
+
+        specify { expect(result).to eql([[:won, player, player.bet]]) }
+      end
+
+      context 'when dealer has blackjack, but player does not' do
+        let(:player_hand) do
+          [
+            ThemePark::Number[rank: 2, suit: 'diamonds'],
+            ThemePark::Number[rank: 8, suit: 'diamonds'],
+            ThemePark::Ace[suit: 'spades']
+          ]
+        end
+
+        let(:dealer_hand) do
+          [
+            ThemePark::Jack[suit: 'spades'],
+            ThemePark::Ace[suit: 'clubs']
+          ]
+        end
+
+        specify { expect(result).to eql([[:lost, player, player.bet]]) }
+      end
+
+      context 'when player has blackjack, but dealer does not' do
+        let(:player_hand) do
+          [
+            ThemePark::Jack[suit: 'spades'],
+            ThemePark::Ace[suit: 'clubs']
+          ]
+        end
+
+        let(:dealer_hand) do
+          [
+            ThemePark::Number[rank: 2, suit: 'diamonds'],
+            ThemePark::Number[rank: 8, suit: 'diamonds'],
+            ThemePark::Ace[suit: 'spades']
+          ]
+        end
+
+        specify { expect(result).to eql([[:won, player, player.bet * 1.5]]) }
+      end
+
+      context 'when both player and dealer have blackjack' do
+        let(:player_hand) do
+          [
+            ThemePark::Jack[suit: 'spades'],
+            ThemePark::Ace[suit: 'clubs']
+          ]
+        end
+
+        let(:dealer_hand) do
+          [
+            ThemePark::King[suit: 'spades'],
+            ThemePark::Ace[suit: 'spades']
+          ]
+        end
+
+        specify { expect(result).to eql([[:tie, player]]) }
+      end
+
+      context 'when player has a better hand' do
+        let(:player_hand) do
+          [
+            ThemePark::Jack[suit: 'spades'],
+            ThemePark::Number[rank: 3, suit: 'clubs']
+          ]
+        end
+
+        let(:dealer_hand) do
+          [
+            ThemePark::Ace[suit: 'spades']
+          ]
+        end
+
+        specify { expect(result).to eql([[:won, player, player.bet]]) }
+      end
+
+      context 'when dealer has a better hand' do
+        let(:player_hand) do
+          [
+            ThemePark::Ace[suit: 'clubs']
+          ]
+        end
+
+        let(:dealer_hand) do
+          [
+            ThemePark::Jack[suit: 'spades'],
+            ThemePark::Queen[suit: 'spades']
+          ]
+        end
+
+        specify { expect(result).to eql([[:lost, player, player.bet]]) }
+      end
+
+      context 'when dealer and player have similar hands' do
+        let(:player_hand) do
+          [
+            ThemePark::Queen[suit: 'spades']
+          ]
+        end
+
+        let(:dealer_hand) do
+          [
+            ThemePark::Jack[suit: 'spades']
+          ]
+        end
+
+        specify { expect(result).to eql([[:tie, player]]) }
+      end
+
+      context 'when player has surrendered' do
+        let(:player) do
+          ThemePark::Blackjack::Player.new(
+            hand: player_hand,
+            name: 'Han Solo',
+            state: :surrendered
+          )
+        end
+
+        specify do
+          expect(result).to eql([[:surrendered, player, player.bet * 0.5]])
+        end
+      end
+    end
+
+    context 'when dealer betting' do
+      subject(:game) { described_class.new(state: :dealer_betting) }
+
+      specify { expect(result).to be(nil) }
+    end
+
+    context 'when players betting' do
+      subject(:game) { described_class.new(state: :players_betting) }
+
+      specify { expect(result).to be(nil) }
+    end
+  end
 end

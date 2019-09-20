@@ -44,6 +44,25 @@ module ThemePark
         state == :finished
       end
 
+      def result
+        return unless finished?
+
+        players.map do |player|
+          case player_result(player)
+          when :lost
+            [:lost, player, player.bet]
+          when :won
+            [:won, player, player.bet]
+          when :tie
+            [:tie, player]
+          when :blackjack
+            [:won, player, 1.5 * player.bet]
+          when :surrendered
+            [:surrendered, player, 0.5 * player.bet]
+          end
+        end
+      end
+
       def dealer_hand
         case state
         when :players_betting
@@ -62,6 +81,28 @@ module ThemePark
       end
 
       private
+
+      def player_result(player)
+        if player.surrendered?
+          :surrendered
+        elsif player.bust?
+          :lost
+        elsif dealer.bust?
+          :won
+        elsif dealer.blackjack? && !player.blackjack?
+          :lost
+        elsif dealer.blackjack? && player.blackjack?
+          :tie
+        elsif player.blackjack?
+          :blackjack
+        elsif player.sum > dealer.sum
+          :won
+        elsif player.sum < dealer.sum
+          :lost
+        else
+          :tie
+        end
+      end
 
       def handle_dealer_decision!(decision)
         case decision
@@ -128,6 +169,8 @@ module ThemePark
       end
 
       def distribute_deck!
+        return unless state == :players_betting
+
         @players = players.map do |player|
           player.take_cards(select_cards!(2))
         end
