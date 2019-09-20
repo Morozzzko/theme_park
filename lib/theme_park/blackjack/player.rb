@@ -33,6 +33,10 @@ module ThemePark
         end
       end
 
+      def surrendered?
+        state == :surrendered
+      end
+
       def sum
         hand.map(&:value).sum
       end

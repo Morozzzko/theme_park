@@ -22,6 +22,42 @@ RSpec.describe ThemePark::Blackjack::Player do
     end
   end
 
+  describe '#surrendered?' do
+    subject(:surrendered?) { player.surrendered? }
+
+    context 'when surrendered' do
+      subject(:player) do
+        described_class.new(hand: hand, name: 'Han', state: :surrendered)
+      end
+
+      specify { expect(surrendered?).to be(true) }
+    end
+
+    context 'when playing' do
+      subject(:player) do
+        described_class.new(hand: hand, name: 'Han', state: :playing)
+      end
+
+      specify { expect(surrendered?).to be(false) }
+    end
+
+    context 'when standing' do
+      subject(:player) do
+        described_class.new(hand: hand, name: 'Han', state: :standing)
+      end
+
+      specify { expect(surrendered?).to be(false) }
+    end
+
+    context 'when bust' do
+      subject(:player) do
+        described_class.new(hand: hand, name: 'Han', state: :bust)
+      end
+
+      specify { expect(surrendered?).to be(false) }
+    end
+  end
+
   describe '#stand' do
     subject(:stand) { player.stand }
 
